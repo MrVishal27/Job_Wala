@@ -67,9 +67,7 @@ public class AuthServiceImpl implements AuthService {
                 response.setMessage("Failed to send OTP email. Please try again.");
             }
         }
-
         return ResponseEntity.ok(response);
-
     }
 
 

@@ -7,7 +7,6 @@ import com.NaukriChowk.Job_Wala.dto.TokenRefreshRequest;
 import com.NaukriChowk.Job_Wala.model.RefreshToken;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
-import com.NaukriChowk.Job_Wala.response.RefreshTokenResponse;
 import com.NaukriChowk.Job_Wala.security.JwtProvider;
 import com.NaukriChowk.Job_Wala.service.AuthService;
 import com.NaukriChowk.Job_Wala.service.OtpService;
@@ -31,7 +30,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpForm)  {
-
         return authService.registerUser(signUpForm);
     }
 

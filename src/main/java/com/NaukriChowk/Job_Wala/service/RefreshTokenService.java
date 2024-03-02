@@ -56,10 +56,4 @@ public class RefreshTokenService {
         return refToken;
     }
 
-    public void verifyExpiration(RefreshToken token) {
-        if (token.getExpirationTime().compareTo(Instant.now()) < 0) {
-            throw new TokenRefreshException(token.getToken(), "Expired token. Please issue a new request");
-        }
-    }
-
 }
