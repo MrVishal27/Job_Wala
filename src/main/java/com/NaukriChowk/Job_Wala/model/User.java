@@ -15,42 +15,35 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
+@Table(name = "users")
 public class User {
 
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotBlank(message = "The email field can't be blank")
+
     @Column(unique = true)
-    @Email(message = "Please enter email in proper format!")
     private String email;
 
-    @NotNull(message = "Age must not be null")
     @Column(name = "user_age")
     private Integer age;
 
-    @Column
-    @NotNull(message = "Password cannot be null")
-    @Size(min = 5, message = "The password must have at least 5 characters")
+    private String gender;
+
     private String password;
 
-    @Column
-    @NotBlank(message = "firstName can not be blank")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column
-//    @NotBlank(message = "Last name cannot be blank")
+    @Column(name = "last_name")
     private String lastName;
 
     @Column(name="user_phone_number")
-//    @NotBlank(message = "The userPhone field can't be blank")
     private String userPhone;
 
-    @Column(nullable = false)
-    private Boolean active;
+    private boolean isVerified = false;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -58,11 +51,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public void activate() {
-        this.active = true;
-    }
-
-    public void deactivate() {
-        this.active = false;
-    }
+    @OneToOne(mappedBy = "user")
+    private RefreshToken refreshToken;
 }

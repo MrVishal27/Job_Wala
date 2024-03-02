@@ -23,7 +23,4 @@ public class LoginForm {
     @Size(min = 6, max = 40)
     private String password;
 
-    @Valid
-    @NotNull(message = "Device info cannot be null")
-    private DeviceInfo deviceInfo;
 }

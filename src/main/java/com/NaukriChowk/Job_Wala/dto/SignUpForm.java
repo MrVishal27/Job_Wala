@@ -11,15 +11,17 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignUpForm {
+public class    SignUpForm {
 
     @NotBlank(message = "firstName can not be blank")
     @Size(min = 3, max = 50)
+    @Pattern(regexp = "[A-Z]{1}[a-z]{2,}")
     private String firstName;
 
 
     @NotBlank(message = "Last name cannot be blank")
     @Size(min = 3, max = 50)
+    @Pattern(regexp = "[A-Z]{1}[a-z]{2,}")
     private String lastName;
 
     @NotBlank
@@ -30,7 +32,11 @@ public class SignUpForm {
 
     @Column(name = "user_age")
     @NotNull(message = "Age must not be null")
+    @Min(value = 18, message = "Age must be greater than or equal to 18")
     private Integer age;
+
+   // @Pattern(regexp = "[mf]", message = "gender must be 'm' or 'f'")
+    private String gender;
 
     private Set<String> role;
 

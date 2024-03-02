@@ -12,26 +12,18 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefreshToken {
+
     @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "refresh_token_seq")
-    @SequenceGenerator(name = "refresh_token_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "TOKEN", nullable = false, unique = true)
     private String token;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_DEVICE_ID", unique = true)
-    private UserDevice userDevice;
+    @Column(name = "EXPIRY_TIME", nullable = false)
+    private Instant expirationTime;
 
-    @Column(name = "REFRESH_COUNT")
-    private Long refreshCount;
+    @OneToOne
+    private User user;
 
-    @Column(name = "EXPIRY_DT", nullable = false)
-    private Instant expiryDate;
-
-    public void incrementRefreshCount() {
-        refreshCount = refreshCount + 1;
-    }
 }
