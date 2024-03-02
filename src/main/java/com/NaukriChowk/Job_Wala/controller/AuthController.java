@@ -7,14 +7,14 @@ import com.NaukriChowk.Job_Wala.dto.TokenRefreshRequest;
 import com.NaukriChowk.Job_Wala.model.RefreshToken;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
+import com.NaukriChowk.Job_Wala.response.RefreshTokenResponse;
 import com.NaukriChowk.Job_Wala.security.JwtProvider;
 import com.NaukriChowk.Job_Wala.service.AuthService;
 import com.NaukriChowk.Job_Wala.service.OtpService;
-import com.NaukriChowk.Job_Wala.service.RefreshTokenService;
+import com.NaukriChowk.Job_Wala.service.RefreshTokenServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +26,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final OtpService otpService;
-    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenServiceImpl refreshTokenService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpForm)  {
@@ -45,9 +45,9 @@ public class AuthController {
         RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(tokenRefreshRequest.getRefreshToken());
         User user = refreshToken.getUser();
 
-        String accessToken = jwtProvider.generateToken((UserDetails) user);
+        String accessToken = jwtProvider.generateToken( user);
 
-        return ResponseEntity.ok(accessToken);
+        return ResponseEntity.ok(new RefreshTokenResponse(accessToken));
     }
 
     @PostMapping("/verify-otp")
