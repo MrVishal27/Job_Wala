@@ -15,8 +15,8 @@ public class EmailUtil {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
-            message.setSubject("OTP Verification");
-            message.setText("Your OTP for registration is: " + otp);
+            message.setSubject("Verify your account");
+            message.setText("Your OTP for registration is: " + otp+ "."+ "Otp expire within 2 minutes ");
             javaMailSender.send(message);
             return true; // Email sending successful
         } catch (Exception e) {

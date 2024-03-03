@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -16,10 +18,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OtpEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String email;
 
     private String otp;
+
+    private LocalDateTime otpGeneratedTime;
 }

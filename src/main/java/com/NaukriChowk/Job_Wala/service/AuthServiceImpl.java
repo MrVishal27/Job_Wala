@@ -16,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(signUpForm.getEmail());
         user.setAge(signUpForm.getAge());
         user.setPassword(passwordEncoder.encode(signUpForm.getPassword()));
+        user.setOtpGeneratedTime(LocalDateTime.now());
 
 
         if (signUpForm != null && signUpForm.getPassword() != null) {

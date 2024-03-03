@@ -14,8 +14,12 @@ import com.NaukriChowk.Job_Wala.service.OtpService;
 import com.NaukriChowk.Job_Wala.service.RefreshTokenServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/auth")
@@ -52,16 +56,34 @@ public class AuthController {
 
     @PostMapping("/verify-otp")
     public String verifyOtp(@RequestBody OtpVerificationRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found with this email: " + request.getEmail()));
+
         String email = request.getEmail();
         String enteredOtp = request.getOtp();
 
-        if (otpService.verifyOtp(email, enteredOtp)) {
-            User user = userRepository.findByEmail(email).orElseThrow();
+        if (otpService.verifyOtp(email, enteredOtp)
+                && Duration.between(user.getOtpGeneratedTime(),
+                LocalDateTime.now()).getSeconds() < (2*60) ){
+
             user.setVerified(true);
             userRepository.save(user);
             return "OTP is valid. User is verified!";
-        } else {
+        }
+        else if(otpService.verifyOtp(email, enteredOtp)
+                && Duration.between(user.getOtpGeneratedTime(),
+                LocalDateTime.now()).getSeconds() > (2*60)){
+
+            return "Otp is Expired. Please re-generate otp.";
+        }
+        else {
             return "Invalid OTP. User verification failed.";
         }
+    }
+
+    @PostMapping("/regenerate-otp")
+    public ResponseEntity<String> regenerateOtp(@RequestBody String email) {
+        return new ResponseEntity<>(otpService.regenerateOtp(email), HttpStatus.OK);
     }
 }
