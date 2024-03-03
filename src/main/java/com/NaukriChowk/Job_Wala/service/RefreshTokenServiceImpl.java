@@ -1,6 +1,5 @@
 package com.NaukriChowk.Job_Wala.service;
 
-import com.NaukriChowk.Job_Wala.exception.TokenRefreshException;
 import com.NaukriChowk.Job_Wala.model.RefreshToken;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.RefreshTokenRepository;
@@ -47,7 +46,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             refreshTokenRepository.delete(refToken);
             throw new RuntimeException("Refresh Token expired");
         }
-
         return refToken;
     }
 

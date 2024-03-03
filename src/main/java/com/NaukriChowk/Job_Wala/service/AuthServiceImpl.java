@@ -80,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("Fail! -> User not found."));
 
         if (!user.isVerified()) {
-            return ResponseEntity.badRequest().body( "User is not verified .");
+            return ResponseEntity.badRequest().body( "User is not verified. please verify then login");
         }
 
         var jwtToken = jwtProvider.generateToken(user);

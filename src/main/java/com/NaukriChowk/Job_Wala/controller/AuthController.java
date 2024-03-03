@@ -28,13 +28,13 @@ public class AuthController {
     private final OtpService otpService;
     private final RefreshTokenServiceImpl refreshTokenService;
 
-    @PostMapping("/signup")
+    @PostMapping("/sign-up")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpForm)  {
         return authService.registerUser(signUpForm);
     }
 
 
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginForm) {
         return authService.loginUser(loginForm);
     }
@@ -64,6 +64,4 @@ public class AuthController {
             return "Invalid OTP. User verification failed.";
         }
     }
-
-
 }
