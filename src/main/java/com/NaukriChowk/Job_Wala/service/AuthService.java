@@ -1,7 +1,6 @@
 package com.NaukriChowk.Job_Wala.service;
 
-import com.NaukriChowk.Job_Wala.dto.LoginForm;
-import com.NaukriChowk.Job_Wala.dto.SignUpForm;
+import com.NaukriChowk.Job_Wala.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -12,5 +11,9 @@ public interface AuthService {
 
      ResponseEntity<?> loginUser(LoginForm loginForm);
 
+     ResponseEntity<?> changePassword(ChangePasswordRequest changePasswordRequest);
+     ResponseEntity<?> forgetPassword(ForgetPasswordRequest forgetPasswordRequest);
+
+     ResponseEntity<?> verifyAndChangePassword(VerifyAndChangePassword verifyAndChangePassword);
 
 }

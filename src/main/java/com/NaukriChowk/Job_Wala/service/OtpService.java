@@ -1,13 +1,14 @@
 package com.NaukriChowk.Job_Wala.service;
 
+import com.NaukriChowk.Job_Wala.dto.RegenerateOtp;
 import com.NaukriChowk.Job_Wala.model.OtpEntity;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.OtpRepository;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
 import com.NaukriChowk.Job_Wala.utils.EmailUtil;
 import com.NaukriChowk.Job_Wala.utils.OtpUtil;
-import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class OtpService {
 
     private final OtpRepository otpRepository;
@@ -25,12 +27,13 @@ public class OtpService {
     private final EmailUtil emailUtil;
 
     public void saveOtp(String email, String otp) {
-
+        User user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("User not exist with this email"));
         try{
             OtpEntity otpEntity = new OtpEntity();
             otpEntity.setEmail(email);
             otpEntity.setOtp(otp);
             otpEntity.setOtpGeneratedTime(LocalDateTime.now());
+            otpEntity.setUser(user);
             otpRepository.save(otpEntity);
         }
         catch (DataIntegrityViolationException e) {
@@ -44,6 +47,7 @@ public class OtpService {
                 entity -> {
                     // Update the existing entity with the new OTP value or handle the scenario as needed
                     entity.setOtp(otp);
+                    entity.setOtpGeneratedTime(LocalDateTime.now());
                     otpRepository.save(entity);
                 },
                 () -> {
@@ -60,9 +64,9 @@ public class OtpService {
     }
 
 
-    public String regenerateOtp(String email) {
+    public String regenerateOtp(RegenerateOtp regenerate) {
 
-        Optional<OtpEntity> optionalOtpEntity = otpRepository.findByEmail(email);
+        Optional<OtpEntity> optionalOtpEntity = otpRepository.findByEmail(regenerate.getEmail());
         if (optionalOtpEntity.isPresent()) {
 
             OtpEntity otpEntity = optionalOtpEntity.get();
@@ -75,31 +79,16 @@ public class OtpService {
                 otpEntity.setOtp(otp);
                 otpEntity.setOtpGeneratedTime(LocalDateTime.now());
                 otpRepository.save(otpEntity);
-                emailUtil.sendOtpEmail(email, otp);
+                emailUtil.sendOtpEmail(regenerate.getEmail(), otp);
                 return "Email sent... please verify account within 2 minutes";
             } else {
                 return "OTP is still valid. No need to regenerate.";
             }
         } else {
-            throw new RuntimeException("No OTP found for this email: " + email);
+            throw new RuntimeException("No OTP found for this email: " + regenerate.getEmail());
         }
     }
-       /* String otp = otpUtil.generateOtp();
-        emailUtil.sendOtpEmail(email, otp);
 
-        try{
-            OtpEntity otpEntity = new OtpEntity();
-            otpEntity.setEmail(email);
-            otpEntity.setOtp(otp);
-            otpEntity.setOtpGeneratedTime(LocalDateTime.now());
-            otpRepository.save(otpEntity);
-        }
-        catch (DataIntegrityViolationException e) {
-            handleDuplicateEmail(email, otp);
-        }
-        return "Email sent... please verify account within 2 minute";
-
-        */
     }
 
 

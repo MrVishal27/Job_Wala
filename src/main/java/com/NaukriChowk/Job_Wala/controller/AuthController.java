@@ -1,9 +1,6 @@
 package com.NaukriChowk.Job_Wala.controller;
 
-import com.NaukriChowk.Job_Wala.dto.LoginForm;
-import com.NaukriChowk.Job_Wala.dto.OtpVerificationRequest;
-import com.NaukriChowk.Job_Wala.dto.SignUpForm;
-import com.NaukriChowk.Job_Wala.dto.TokenRefreshRequest;
+import com.NaukriChowk.Job_Wala.dto.*;
 import com.NaukriChowk.Job_Wala.model.RefreshToken;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
@@ -32,15 +29,16 @@ public class AuthController {
     private final OtpService otpService;
     private final RefreshTokenServiceImpl refreshTokenService;
 
+
     @PostMapping("/sign-up")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpForm)  {
-        return authService.registerUser(signUpForm);
+        return new ResponseEntity<>(authService.registerUser(signUpForm),HttpStatus.CREATED);
     }
 
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginForm) {
-        return authService.loginUser(loginForm);
+        return new ResponseEntity<>(authService.loginUser(loginForm),HttpStatus.OK);
     }
 
     @PostMapping("/refresh")
@@ -55,35 +53,35 @@ public class AuthController {
     }
 
     @PostMapping("/verify-otp")
-    public String verifyOtp(@RequestBody OtpVerificationRequest request) {
-
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found with this email: " + request.getEmail()));
-
-        String email = request.getEmail();
-        String enteredOtp = request.getOtp();
-
-        if (otpService.verifyOtp(email, enteredOtp)
-                && Duration.between(user.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds() < (2*60) ){
-
+    public ResponseEntity<String> verifyOtp(@RequestBody OtpVerificationRequest request) {
+        if (otpService.verifyOtp(request.getEmail(), request.getOtp())) {
+            User user = userRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found with this email: " + request.getEmail()));
             user.setVerified(true);
             userRepository.save(user);
-            return "OTP is valid. User is verified!";
-        }
-        else if(otpService.verifyOtp(email, enteredOtp)
-                && Duration.between(user.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds() > (2*60)){
-
-            return "Otp is Expired. Please re-generate otp.";
-        }
-        else {
-            return "Invalid OTP. User verification failed.";
+            return ResponseEntity.ok("OTP is valid. User is verified!");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired OTP. Please try again.");
         }
     }
 
     @PostMapping("/regenerate-otp")
-    public ResponseEntity<String> regenerateOtp(@RequestBody String email) {
-        return new ResponseEntity<>(otpService.regenerateOtp(email), HttpStatus.OK);
+    public ResponseEntity<String> regenerateOtp(@RequestBody RegenerateOtp regenerate) {
+        return new ResponseEntity<>(otpService.regenerateOtp(regenerate), HttpStatus.OK);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest){
+        return  new ResponseEntity<>(authService.changePassword(changePasswordRequest),HttpStatus.OK);
+    }
+
+    @PostMapping("/forget-password")
+    private ResponseEntity<?> forgetPassword(@RequestBody ForgetPasswordRequest forgetPasswordRequest){
+        return  new ResponseEntity<>(authService.forgetPassword(forgetPasswordRequest),HttpStatus.OK);
+    }
+
+    @PostMapping("/verify-and-change-password")
+    public ResponseEntity<?> verifyAndChangePassword(@RequestBody VerifyAndChangePassword request) {
+        return authService.verifyAndChangePassword(request);
     }
 }

@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -57,7 +56,8 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
-    private LocalDateTime otpGeneratedTime;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private OtpEntity otpEntity;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
