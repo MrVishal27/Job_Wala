@@ -1,4 +1,4 @@
-package com.NaukriChowk.Job_Wala.dto;
+package com.NaukriChowk.Job_Wala.dto.authrequest;
 
 import lombok.Data;
 

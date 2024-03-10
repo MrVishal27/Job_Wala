@@ -1,6 +1,6 @@
 package com.NaukriChowk.Job_Wala.service;
 
-import com.NaukriChowk.Job_Wala.dto.*;
+import com.NaukriChowk.Job_Wala.dto.authrequest.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package com.NaukriChowk.Job_Wala.controller;
 
-import com.NaukriChowk.Job_Wala.dto.*;
+import com.NaukriChowk.Job_Wala.dto.authrequest.*;
 import com.NaukriChowk.Job_Wala.model.RefreshToken;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
@@ -8,15 +8,12 @@ import com.NaukriChowk.Job_Wala.response.RefreshTokenResponse;
 import com.NaukriChowk.Job_Wala.security.JwtProvider;
 import com.NaukriChowk.Job_Wala.service.AuthService;
 import com.NaukriChowk.Job_Wala.service.OtpService;
-import com.NaukriChowk.Job_Wala.service.RefreshTokenServiceImpl;
+import com.NaukriChowk.Job_Wala.service.impl.RefreshTokenServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/auth")

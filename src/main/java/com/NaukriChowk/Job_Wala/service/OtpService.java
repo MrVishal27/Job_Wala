@@ -1,6 +1,6 @@
 package com.NaukriChowk.Job_Wala.service;
 
-import com.NaukriChowk.Job_Wala.dto.RegenerateOtp;
+import com.NaukriChowk.Job_Wala.dto.authrequest.RegenerateOtp;
 import com.NaukriChowk.Job_Wala.model.OtpEntity;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.OtpRepository;

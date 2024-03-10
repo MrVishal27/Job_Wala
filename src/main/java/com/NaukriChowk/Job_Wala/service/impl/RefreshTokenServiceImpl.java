@@ -1,9 +1,10 @@
-package com.NaukriChowk.Job_Wala.service;
+package com.NaukriChowk.Job_Wala.service.impl;
 
 import com.NaukriChowk.Job_Wala.model.RefreshToken;
 import com.NaukriChowk.Job_Wala.model.User;
 import com.NaukriChowk.Job_Wala.repo.RefreshTokenRepository;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
+import com.NaukriChowk.Job_Wala.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.NaukriChowk.Job_Wala.dto;
+package com.NaukriChowk.Job_Wala.dto.authrequest;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;

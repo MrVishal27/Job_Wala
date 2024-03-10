@@ -1,11 +1,13 @@
-package com.NaukriChowk.Job_Wala.service;
+package com.NaukriChowk.Job_Wala.service.impl;
 
-import com.NaukriChowk.Job_Wala.dto.*;
+import com.NaukriChowk.Job_Wala.dto.authrequest.*;
 import com.NaukriChowk.Job_Wala.model.*;
 import com.NaukriChowk.Job_Wala.repo.UserRepository;
 import com.NaukriChowk.Job_Wala.response.LoginResponse;
 import com.NaukriChowk.Job_Wala.response.RegisterResponse;
 import com.NaukriChowk.Job_Wala.security.JwtProvider;
+import com.NaukriChowk.Job_Wala.service.AuthService;
+import com.NaukriChowk.Job_Wala.service.OtpService;
 import com.NaukriChowk.Job_Wala.utils.EmailUtil;
 import com.NaukriChowk.Job_Wala.utils.OtpUtil;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenServiceImpl refreshTokenService;
     private final OtpUtil otpUtil;
     private final EmailUtil emailUtil;
-    private final  OtpService otpService;
+    private final OtpService otpService;
 
 
     @Override
@@ -94,6 +98,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<?> changePassword(ChangePasswordRequest changePasswordRequest) {
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if(auth == null){
+            throw new RuntimeException("First Login then You can Change Password");
+        }
+
         User user = userRepository.findByEmail(changePasswordRequest.getEmail())
                 .orElseThrow(()-> new RuntimeException("User not exist with this email:"+changePasswordRequest.getEmail()));
 
@@ -135,6 +145,11 @@ public class AuthServiceImpl implements AuthService {
 
 
         if (otpService.verifyOtp(verify.getEmail(), verify.getOtp())) {
+            if(passwordEncoder.matches(verify.getNewPassword() ,user.getPassword())){
+                return ResponseEntity.badRequest()
+                        .body("new Password and previous Password cannot be same");
+            }
+
             user.setPassword(passwordEncoder.encode(verify.getNewPassword()));
 
             userRepository.save(user);

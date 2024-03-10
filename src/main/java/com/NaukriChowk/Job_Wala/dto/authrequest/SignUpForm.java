@@ -1,4 +1,4 @@
-package com.NaukriChowk.Job_Wala.dto;
+package com.NaukriChowk.Job_Wala.dto.authrequest;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class    SignUpForm {
+public class  SignUpForm {
 
     @NotBlank(message = "firstName can not be blank")
     @Size(min = 3, max = 50)
@@ -39,7 +39,6 @@ public class    SignUpForm {
     private String gender;
 
     private Set<String> role;
-
 
     @NotBlank(message = "Password cannot be null")
     @Size(min = 6, max = 40)
